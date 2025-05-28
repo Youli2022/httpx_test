@@ -12,7 +12,7 @@ EMOJIS = ["😂", "🤣", "😆", "😅", "😄", "😁", "🤪", "😜", "🤩"
 @app.route('/')
 def get_jokes():
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    params = {'key': '9e21081587f15c2cfdc19612c6d002cd'} #接口申请地址https://www.juhe.cn/docs/o1
+    params = {'key': ''} #接口申请地址https://www.juhe.cn/docs/o1
     url = "http://v.juhe.cn/joke/randJoke"
 
     try:

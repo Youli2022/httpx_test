@@ -1,7 +1,7 @@
 import httpx
 
 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-params = {'key': 'e5a68b164643f418b90fcc1ac2a2d5c1', 'page_size': '1'}  #接口申请地址https://www.juhe.cn/docs/api/id/235
+params = {'key': '', 'page_size': '1'}  #接口申请地址https://www.juhe.cn/docs/api/id/235
 url = "http://v.juhe.cn/toutiao/index"
 r = httpx.get(url, headers=headers, params=params)
 data = r.json()

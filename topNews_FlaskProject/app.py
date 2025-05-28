@@ -37,7 +37,7 @@ def news_list(news_type, page):
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     params = {
-        'key': 'e5a68b164643f418b90fcc1ac2a2d5c1',
+        'key': '',##接口申请地址https://www.juhe.cn/docs/api/id/235
         'type': news_type,
         'page': page,
         'is_filter':1,
