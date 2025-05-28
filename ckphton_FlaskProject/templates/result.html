@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>查询结果</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
+        .result { background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .result-item { margin-bottom: 10px; }
+        .back-btn { display: inline-block; margin-top: 15px; text-decoration: none; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>查询结果</h1>
+
+    <div class="result">
+        <div class="result-item"><strong>手机号:</strong> {{ phone }}</div>
+        <div class="result-item"><strong>归属地:</strong> {{ province }}省 {{ city }}市</div>
+        <div class="result-item"><strong>运营商:</strong> {{ company }}</div>
+        <div class="result-item"><strong>区号:</strong> {{ areacode }}</div>
+        <div class="result-item"><strong>邮编:</strong> {{ zip_code }}</div>
+    </div>
+
+    <a href="/" class="back-btn">返回重新查询</a>
+</body>
+</html>

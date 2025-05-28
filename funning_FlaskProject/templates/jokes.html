@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开心一刻 {{ page_emoji }}</title>
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --accent-color: #FFE66D;
+            --dark-color: #292F36;
+            --light-color: #F7FFF7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Marker Felt', 'Arial Rounded MT Bold', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            background-image: radial-gradient(circle, var(--accent-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0 40px;
+            color: var(--dark-color);
+            font-size: 3rem;
+            text-shadow: 3px 3px 0 var(--accent-color);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+        }
+
+        h1::after {
+            content: "{{ page_emoji }}";
+            position: absolute;
+            right: -40px;
+            top: -20px;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .joke-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .joke-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 8px 8px 0 var(--dark-color);
+            border: 3px solid var(--dark-color);
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .joke-card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: 13px 13px 0 var(--dark-color);
+        }
+
+        .joke-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+
+        .joke-content {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .joke-content::before {
+            content: "“";
+            position: absolute;
+            left: 0;
+            top: -10px;
+            font-size: 50px;
+            color: var(--primary-color);
+            opacity: 0.3;
+        }
+
+        .joke-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .refresh-btn {
+            display: block;
+            width: 200px;
+            margin: 50px auto 0;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 0 color-mix(in srgb, var(--primary-color), black 30%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 color-mix(in srgb, var(--primary-color), black 30%);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 color-mix(in srgb, var(--primary-color), black 30%);
+        }
+
+        .refresh-btn::after {
+            content: "😂";
+            position: absolute;
+            right: 15px;
+            animation: spin 1.5s infinite linear;
+        }
+
+        .floating-emojis {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .joke-card {
+                padding: 20px 15px;
+            }
+
+            .refresh-btn {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-emojis" id="emoji-container"></div>
+
+    <div class="container">
+        <h1>开心一刻</h1>
+
+        <div class="joke-list">
+            {% for joke in jokes %}
+            <div class="joke-card">
+                <div class="joke-content">{{ joke.content }}</div>
+                <div class="joke-meta">
+                    <span>ID: {{ joke.hashId }}</span>
+                    <span>时间: {{ joke.time }} {{ joke.emoji }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="refresh-btn" onclick="window.location.reload()">换一批笑话</button>
+    </div>
+
+    <script>
+        // 创建漂浮的表情符号
+        function createFloatingEmojis() {
+            const container = document.getElementById('emoji-container');
+            const emojis = ["😂", "🤣", "😆", "😅", "😄", "😁", "🤪", "😜", "🤩", "👻", "🤡", "🎭"];
+
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const emoji = document.createElement('div');
+                    emoji.className = 'emoji';
+                    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    emoji.style.left = Math.random() * 100 + 'vw';
+                    emoji.style.animationDuration = (10 + Math.random() * 20) + 's';
+                    emoji.style.animationDelay = Math.random() * 5 + 's';
+                    container.appendChild(emoji);
+
+                    // 移除完成动画的表情
+                    setTimeout(() => {
+                        emoji.remove();
+                    }, 30000);
+                }, i * 1000);
+            }
+        }
+
+        // 页面加载时创建漂浮表情
+        window.onload = function() {
+            createFloatingEmojis();
+            setInterval(createFloatingEmojis, 15000);
+
+            // 为笑话卡片添加随机旋转
+            const cards = document.querySelectorAll('.joke-card');
+            cards.forEach(card => {
+                const rotation = (Math.random() * 6) - 3; // -3到3度
+                card.style.transform = `rotate(${rotation}deg)`;
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = `rotate(0deg) translate(-5px, -5px)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `rotate(${rotation}deg) translate(0, 0)`;
+                });
+            });
+        };
+    </script>
+</body>
+</html>
