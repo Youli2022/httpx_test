@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球地震实时监测</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --major-color: #e74c3c;
+            --strong-color: #f39c12;
+            --moderate-color: #f1c40f;
+            --light-color: #2ecc71;
+            --minor-color: #3498db;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--major-color), var(--minor-color));
+            border-radius: 2px;
+        }
+
+        .summary {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #7f8c8d;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .earthquake-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quake-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quake-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .quake-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .quake-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .magnitude {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .level {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .quake-details {
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .quake-details p {
+            margin: 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .quake-details strong {
+            min-width: 60px;
+            display: inline-block;
+            color: #7f8c8d;
+        }
+
+        .details-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .details-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 地震等级样式 */
+        .major::before {
+            background: var(--major-color);
+        }
+
+        .major .magnitude {
+            color: var(--major-color);
+        }
+
+        .major .level {
+            background: var(--major-color);
+            color: white;
+        }
+
+        .strong::before {
+            background: var(--strong-color);
+        }
+
+        .strong .magnitude {
+            color: var(--strong-color);
+        }
+
+        .strong .level {
+            background: var(--strong-color);
+            color: white;
+        }
+
+        .moderate::before {
+            background: var(--moderate-color);
+        }
+
+        .moderate .magnitude {
+            color: var(--moderate-color);
+        }
+
+        .moderate .level {
+            background: var(--moderate-color);
+            color: var(--text-color);
+        }
+
+        .light::before {
+            background: var(--light-color);
+        }
+
+        .light .magnitude {
+            color: var(--light-color);
+        }
+
+        .light .level {
+            background: var(--light-color);
+            color: white;
+        }
+
+        .minor::before {
+            background: var(--minor-color);
+        }
+
+        .minor .magnitude {
+            color: var(--minor-color);
+        }
+
+        .minor .level {
+            background: var(--minor-color);
+            color: white;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .earthquake-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quake-card {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .quake-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .quake-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .quake-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .quake-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .quake-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1><i class=""></i> 🌏全球地震实时监测</h1>
+        <p>最新地震数据 · 实时更新</p>
+    </div>
+
+    {% if data.success %}
+        <div class="summary">
+            <i class="fas fa-wave-square"></i> 最近24小时共监测到 {{ data.count }} 次地震活动
+        </div>
+
+        <div class="earthquake-list">
+            {% for quake in data.earthquakes %}
+                <div class="quake-card {{ quake.css_class }}">
+                    <div class="quake-header">
+                        <div class="magnitude">{{ quake.magnitude }}</div>
+                        <div class="level">{{ quake.level }}</div>
+                    </div>
+                    <div class="quake-details">
+                        <p><strong><i class="fas fa-clock"></i> 时间:</strong> {{ quake.time }}</p>
+                        <p><strong><i class="fas fa-map-marker-alt"></i> 位置:</strong> {{ quake.location }}</p>
+                        <p><strong><i class="fas fa-map-pin"></i> 坐标:</strong>
+                            <span class="coords">
+                                纬度 {{ quake.latitude }}, 经度 {{ quake.longitude }}
+                            </span>
+                        </p>
+                        <p><strong><i class="fas fa-ruler-vertical"></i> 深度:</strong> {{ quake.depth }}公里</p>
+                        <a href="{{ quake.details_url }}" class="details-link" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> 查看详细报告
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="error-card">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>数据加载失败</h3>
+            <p>{{ data.message }} (错误码: {{ data.code }})</p>
+            <button onclick="window.location.reload()" class="refresh-btn">
+                <i class="fas fa-sync-alt"></i> 重新加载
+            </button>
+        </div>
+    {% endif %}
+
+    <footer>
+        <p>数据更新时间: {{ now.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        <p>© 2023 地震监测系统 | 数据来源: 中国地震台网</p>
+    </footer>
+</div>
+</body>
+</html>

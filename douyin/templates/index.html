@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>抖音内容解析</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+</head>
+<body>
+    <div class="container">
+        <h1>抖音内容解析</h1>
+
+        <form method="POST">
+            <div class="input-group">
+                <input type="text" name="url" placeholder="请输入抖音视频或图集链接" required>
+                <button type="submit">解析</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if data %}
+            <div class="content-box">
+                <div class="content-header">
+                    <h2>{{ data.title }}</h2>
+                    <p class="author">作者: {{ data.name }}</p>
+                    <p class="type-tag">{{ data.type }}</p>
+                </div>
+
+                {% if data.type == '视频' %}
+                    <div class="media-container video-wrapper">
+                        <video controls crossorigin="anonymous">
+                            <source src="{{ url_for('proxy', url=data.yvideo) }}" type="video/mp4">
+                            您的浏览器不支持视频播放
+                        </video>
+                    </div>
+                    <div class="download-area">
+                        <a href="{{ url_for('proxy', url=data.yvideo) }}" download class="download-btn">
+                            <i class="icon-download"></i>下载视频
+                        </a>
+                    </div>
+
+                {% elif data.type == '图集' %}
+                    <div class="media-container gallery-wrapper">
+                        <div class="swiper">
+                            <div class="swiper-wrapper">
+                                {% for image in data.images %}
+                                <div class="swiper-slide">
+                                    <div class="image-container">
+                                        <img src="{{ url_for('proxy', url=image) }}"
+                                             alt="图集图片 {{ loop.index }}"
+                                             loading="lazy"
+                                             onload="this.style.opacity=1">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+                    </div>
+                    <div class="download-area">
+                        <button id="download-all" class="download-btn">
+                            <i class="icon-download-all"></i>下载全部图片({{ data.images|length }}张)
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

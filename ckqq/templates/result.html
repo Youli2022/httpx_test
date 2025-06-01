@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ估价结果 - QQ估价网</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>QQ估价结果</h1>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        <a href="/" class="back-btn">返回首页</a>
+        {% else %}
+        <div class="result-card">
+            <div class="qq-info">
+                <div class="avatar">
+                    <img src="{{ data.head }}" alt="QQ头像">
+                </div>
+                <div class="basic-info">
+                    <h2>{{ data.Name }}</h2>
+                    <p>QQ号: {{ data.qq }}</p>
+                    <p class="valuation">估价范围: {{ data.valuation }}</p>
+                </div>
+            </div>
+
+            <div class="details">
+                <h3>详细信息</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">QQ等级:</span>
+                        <span class="value">{{ data.Level }} ({{ data.Icon }})</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">等级天数:</span>
+                        <span class="value">{{ data.NetworkDay }}天 (距下级还需{{ data.Next }}天)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">会员状态:</span>
+                        <span class="value">
+                            {% if data.iVip == '1' %}VIP{{ data.iVipLevel }}{% else %}非会员{% endif %}
+                            {% if data.iSVip == '1' %}(超级会员){% endif %}
+                            {% if data.iYearVip == '1' %}(年费会员){% endif %}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">PC状态:</span>
+                        <span class="value">{% if data.iPCQQOnline == '1' %}在线{% else %}离线{% endif %}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">成长天数:</span>
+                        <span class="value">{{ data.TheDays }}天 (基础:{{ data.iBaseDays }}天)</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="/" class="back-btn">返回首页</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

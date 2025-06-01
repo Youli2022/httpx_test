@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQ估价网 - 专业QQ靓号估价平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>QQ估价网</h1>
+        <p class="subtitle">专业QQ靓号估价平台</p>
+
+        <div class="search-box">
+            <form action="/query" method="POST">
+                <input type="text" name="qq" placeholder="请输入QQ号码" required>
+                <button type="submit">立即估价</button>
+            </form>
+        </div>
+
+        <div class="qq-types">
+            <h2>QQ靓号分类</h2>
+
+            {% for category, types in qq_types.items() %}
+            <div class="category">
+                <h3>{{ category }}</h3>
+                <ul>
+                    {% for type, desc in types.items() %}
+                    <li><strong>{{ type }}:</strong> {{ desc }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

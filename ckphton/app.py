@@ -10,7 +10,7 @@ def index():
         phone = request.form.get('phone')
 
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        params = {'phone': phone, 'key': ''} #接口申请地址https://www.juhe.cn/docs/o1
+        params = {'phone': phone, 'key': 'ceb0d0562ffaab815d7464860b0f3f29'} #接口申请地址https://www.juhe.cn/docs/o1
         url = "http://apis.juhe.cn/mobile/get"
 
         try:

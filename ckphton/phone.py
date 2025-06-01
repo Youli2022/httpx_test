@@ -2,12 +2,13 @@ import httpx
 
 phone = input(f"请输入您的手机号：")
 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-params = {'phone': phone, 'key': ''}  ##接口申请地址:https://www.juhe.cn/docs/api/id/11
+params = {'phone': phone, 'key': 'ceb0d0562ffaab815d7464860b0f3f29'}  ##接口申请地址:https://www.juhe.cn/docs/api/id/11
 url = "http://apis.juhe.cn/mobile/get"
 r = httpx.get(url, headers=headers, params=params)
 
 data = r.json()
 print(data)
+
 if data['resultcode'] == '200' and data['error_code'] == 0:
     result = data['result']
 
